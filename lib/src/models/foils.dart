@@ -3,7 +3,7 @@ library foil;
 
 import 'dart:math' as math;
 
-import '../common.dart';
+import 'package:nonsense_foil/nonsense_foil.dart';
 
 // import 'steps.dart';
 

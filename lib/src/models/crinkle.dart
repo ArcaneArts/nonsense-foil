@@ -1,7 +1,7 @@
 /// Provides the `Crinkle` animation parameter object for `Roll`s.
 library foil;
 
-import '../common.dart';
+import 'package:nonsense_foil/nonsense_foil.dart';
 
 /// Provide animation to a piece of `Foil` by wrapping it in a `Roll`
 /// with a specified `Crinkle`.
@@ -48,7 +48,7 @@ class Crinkle with Diagnosticable {
   /// value. This is provided to the gradient-transformation process, as a
   /// percentage-of-offset, to [transform].
   /// - This transformation applies seperately from and in addition to
-  /// any accelerometer sensor data (unless `Foil.useSensor == false`).
+  /// any pointer movement data (unless `Foil.useSensor == false`).
   /// - If no [transform] is provided, default will be a [TranslateGradient].
   ///
   /// After one [period] our `t` would be `1.0` and [max] (default is `2.0`)
@@ -63,7 +63,7 @@ class Crinkle with Diagnosticable {
   /// configurable for either [Scalar.horizontal] or [Scalar.vertical] axis.
   /// The default is [Scalar.identity] which makes no impact.
   ///
-  /// These values apply in addition to any accelerometer sensor data already
+  /// These values apply in addition to any pointer movement data already
   /// affecting a `Foil`'s gradient as well as the current animation value
   /// between [min] and [max].
   ///
@@ -117,8 +117,11 @@ class Crinkle with Diagnosticable {
   static const Crinkle twinkling = Crinkle(period: Duration(seconds: 30));
 
   /// An incredibly slow `Crinkle`.
-  static const Crinkle crawling =
-      Crinkle(min: -1.0, max: 1.0, period: Duration(minutes: 2));
+  static const Crinkle crawling = Crinkle(
+    min: -1.0,
+    max: 1.0,
+    period: Duration(minutes: 2),
+  );
 
   /// Testing.
   static const Crinkle loop = Crinkle(
@@ -139,30 +142,44 @@ class Crinkle with Diagnosticable {
     Scalar? scalar,
     Duration? period,
     TransformGradient? transform,
-  }) =>
-      Crinkle(
-        isAnimated: isAnimated ?? this.isAnimated,
-        shouldReverse: shouldReverse ?? this.shouldReverse,
-        min: min ?? this.min,
-        max: max ?? this.max,
-        scalar: scalar ?? this.scalar,
-        period: period ?? this.period,
-        transform: transform ?? this.transform,
-      );
+  }) => Crinkle(
+    isAnimated: isAnimated ?? this.isAnimated,
+    shouldReverse: shouldReverse ?? this.shouldReverse,
+    min: min ?? this.min,
+    max: max ?? this.max,
+    scalar: scalar ?? this.scalar,
+    period: period ?? this.period,
+    transform: transform ?? this.transform,
+  );
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty<bool>('isAnimated', isAnimated,
-          defaultValue: false))
-      ..add(DiagnosticsProperty<bool>('shouldReverse', shouldReverse,
-          defaultValue: true))
+      ..add(
+        DiagnosticsProperty<bool>(
+          'isAnimated',
+          isAnimated,
+          defaultValue: false,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<bool>(
+          'shouldReverse',
+          shouldReverse,
+          defaultValue: true,
+        ),
+      )
       ..add(DoubleProperty('min', min, defaultValue: null))
       ..add(DoubleProperty('max', max, defaultValue: null))
       ..add(DiagnosticsProperty<Scalar>('scalar', scalar, defaultValue: null))
       ..add(DiagnosticsProperty<Duration>('period', period, defaultValue: null))
-      ..add(DiagnosticsProperty<TransformGradient>('transform', transform,
-          defaultValue: null));
+      ..add(
+        DiagnosticsProperty<TransformGradient>(
+          'transform',
+          transform,
+          defaultValue: null,
+        ),
+      );
   }
 }

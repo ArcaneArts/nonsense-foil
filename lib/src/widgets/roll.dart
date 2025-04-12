@@ -3,41 +3,34 @@
 /// to apply to each `Foil` underneath it.
 library foil;
 
-import '../common.dart';
+import 'package:nonsense_foil/nonsense_foil.dart';
 
-/// {@macro roll}
+/// A widget that provides shared gradient and animation properties to descendant [Foil] widgets.
+///
+/// The [Roll] widget acts as a coordinator for multiple [Foil] instances,
+/// allowing them to share a common gradient and animation characteristics.
+/// This creates a cohesive visual effect across multiple elements.
+///
+/// A [Roll] can provide:
+/// 1. A shared [gradient] that descendant [Foil] widgets can use
+/// 2. Animation parameters through [crinkle] that affect how foil effects animate
+///
+/// In the future, this widget will also support creating a single gradient sheet
+/// that spans the entire Roll area, with descendant Foils using portions of that
+/// shared gradient.
+///
+/// ![animated by Roll.crinkle](https://raw.githubusercontent.com/Zabadam/foil/master/doc/crinkle_small.gif)
 class Roll extends StatefulWidget with Diagnosticable {
-  /// {@template roll}
-  /// Provide a `Roll` for `Foil`.
+  /// Creates a Roll that can provide gradient and animation properties to descendant [Foil] widgets.
   ///
-  /// ### Sharing Gradients
-  /// A [gradient] in an ancestral `Roll` may be provided to a descendent `Foil`
-  /// as its `Foil.gradient` if one is not explicitly perscribed in the `Foil`.
-  /// - If neither an ancestral `Roll` nor a `Foil` dictates its own `gradient`,
-  ///   then the default is `Foils.rainbows.linear`.
-  /// - A descendent that provides its own `Foil.gradient`
-  ///   will override this [gradient].
+  /// The [gradient] parameter specifies a shared gradient that descendant [Foil]
+  /// widgets can use if they don't specify their own.
   ///
-  /// ### Animations
-  /// This `Roll` can also serve to provide animation properties
-  /// to a descendent `Foil`, regardless if its serving its [gradient].
+  /// The [crinkle] parameter (defaults to [Crinkle.smooth]) provides animation
+  /// properties that affect how descendant [Foil] widgets animate their gradients.
+  /// This animation works independently from pointer tracking.
   ///
-  /// The [crinkle] parameter defaults to [Crinkle.smooth] which is
-  /// not animated (although each `Roll` has its own `AnimationController`).
-  /// A `Crinkle` dictates speed, intensity, and directionality of animation.
-  /// - [Crinkle.twinkling] is a very slow moving preset
-  /// - [Crinkle.vivacious] is a highly-animated preset
-  /// - Build your own or opt to [Crinkle.copyWith] a preset
-  ///   - [Crinkle.scalar] property can be used to invert, scale, or negate axes
-  ///   - [Crinkle.period] determines the loop `Duration`
-  ///
-  /// ### A *Literally* Shared `Gradient`
-  /// TODO:
-  ///
-  /// Ideally a `Roll` will allow the definition of a swath of space,
-  /// dictated by the tree underneath it, to shade with a single larger
-  /// `Gradient`from which any descendent `Foil` widgets could be offset/masked.
-  /// {@endtemplate}
+  /// The [child] parameter is the widget below this widget in the tree.
   const Roll({
     Key? key,
     this.gradient,
@@ -45,33 +38,28 @@ class Roll extends StatefulWidget with Diagnosticable {
     this.child,
   }) : super(key: key);
 
-  /// The `Gradient` to provide to any children `Foil` widgets.
+  /// The gradient to share with descendant [Foil] widgets.
   ///
-  /// A [gradient] in an ancestral `Roll` may be provided to a descendent `Foil`
-  /// as its `Foil.gradient` if one is not explicitly perscribed in the `Foil`.
-  /// - If neither an ancestral `Roll` nor a `Foil` dictates its own `gradient`,
-  ///   then the default is `Foils.rainbows.loopingLinear`.
-  /// - A descendent that provides its own `Foil.gradient`
-  ///   will override this [gradient].
+  /// If a descendant [Foil] doesn't specify its own gradient, it will use this gradient.
+  /// If this is null and a [Foil] doesn't specify its own gradient, the [Foil]
+  /// will fall back to [Foils.linearLooping].
   final Gradient? gradient;
 
-  /// This `Roll` can also serve to provide animation properties to
-  /// a descendent `Foil`, regardless if its serving its [gradient].
+  /// Animation properties for descendant [Foil] widgets.
   ///
-  /// This [crinkle] parameter defaults to [Crinkle.smooth] which
-  /// is not animated (although each Roll has its own `AnimationController`).
-  /// A `Crinkle` dictates speed, intensity, and directionality of animation.
-  /// - [Crinkle.twinkling] is a very slow moving preset
-  /// - [Crinkle.vivacious] is a highly-animated preset
-  /// - Build your own or opt to [Crinkle.copyWith] a preset
-  ///   - [Crinkle.scalar] property can be used to invert, scale, or negate axes
-  ///   - [Crinkle.period] determines the loop Duration
+  /// The [crinkle] parameter controls how descendant [Foil] widgets animate
+  /// their gradients. This animation works independently from and in addition to
+  /// any pointer tracking animation. The default [Crinkle.smooth] provides no animation.
   final Crinkle crinkle;
 
-  /// The widget directly below `this` one in the tree.
+  /// The widget below this widget in the tree.
   final Widget? child;
 
-  /// Returns the nearest [RollState] ancestor.
+  /// Finds and returns the nearest ancestor [RollState] in the widget tree.
+  ///
+  /// This allows descendant [Foil] widgets to access the [Roll]'s properties
+  /// such as its gradient and animation settings. Returns null if no
+  /// ancestor [Roll] is found.
   static RollState? of(BuildContext context) =>
       context.findAncestorStateOfType<RollState>();
 
@@ -83,70 +71,101 @@ class Roll extends StatefulWidget with Diagnosticable {
     super.debugFillProperties(properties);
     properties
       ..add(
-          DiagnosticsProperty<Crinkle>('crinkle', crinkle, defaultValue: null))
-      ..add(DiagnosticsProperty<Gradient>('gradient', gradient,
-          defaultValue: null));
+        DiagnosticsProperty<Crinkle>('crinkle', crinkle, defaultValue: null),
+      )
+      ..add(
+        DiagnosticsProperty<Gradient>('gradient', gradient, defaultValue: null),
+      );
   }
 }
 
-/// Provide a `Roll` of `Foil` such that any descendents may
-/// obtain their `Foil.gradient` value from this definition.
+/// State class for [Roll] that manages animations and provides properties to descendant [Foil] widgets.
 ///
-/// Also provides animation properties regardless of whether
-/// it is serving its [gradient] or not.
+/// This class manages the animation controller for [Crinkle] animations and
+/// provides access to properties such as the gradient and transformation
+/// functions needed by descendant [Foil] widgets.
 class RollState extends State<Roll> with SingleTickerProviderStateMixin {
+  /// Animation controller for crinkle animations.
+  ///
+  /// This controller is set up with the animation properties specified
+  /// in the [Roll.crinkle] and drives the gradient animations for
+  /// descendant [Foil] widgets.
   AnimationController? _rollController;
 
-  /// Access to the internal [AnimationController] for this `RollState`.
+  /// The animation controller as a [ValueListenable].
+  ///
+  /// Descendant [Foil] widgets listen to this to animate their gradients
+  /// based on the [Roll.crinkle] properties.
   ValueListenable? get rollListenable => _rollController;
 
-  /// The `Gradient` to provide to any children `Foil` widgets.
+  /// The gradient to share with descendant [Foil] widgets.
+  ///
+  /// If a descendant [Foil] doesn't specify its own gradient, it will use this gradient.
   Gradient? get gradient => widget.gradient;
 
-  /// Returns whether this `RollState.widget.crinkle.isAnimated`.
+  /// Whether this [Roll] provides animations for descendant [Foil] widgets.
+  ///
+  /// When true, descendant [Foil] widgets will animate their gradients based on
+  /// the [Roll.crinkle] properties, in addition to any pointer tracking animations.
   bool get isAnimated => widget.crinkle.isAnimated;
 
-  /// Returns this `RollState.widget.crinkle.scalar` for animation.
+  /// The scaling factors for gradient animations.
+  ///
+  /// These factors adjust the intensity of gradient animations independently
+  /// on each axis.
   Scalar get scalar => widget.crinkle.scalar;
 
-  /// Returns this `RollState.widget.crinkle.transform` for animation.
+  /// The transformation function for gradient animations.
+  ///
+  /// This function controls how the gradient is transformed during animations.
+  /// If null, a default [TranslateGradient] will be used.
   TransformGradient? get transform => widget.crinkle.transform;
 
-  /// Returns the `size` of the [RenderBox] representing this `RollState`.
+  /// The current size of this [Roll] widget.
+  ///
+  /// This is used for positioning calculations when the future shared gradient
+  /// sheet functionality is implemented.
   Size get size => (context.findRenderObject() as RenderBox).size;
 
-  /// Whether the [RenderBox] representing this `RollState` has size.
-  bool get isSized => (context.findRenderObject() == null)
-      ? false
-      : (context.findRenderObject() as RenderBox).hasSize;
+  /// Whether this [Roll] widget has determined its size.
+  ///
+  /// Used to ensure size-dependent operations are only performed after layout.
+  bool get isSized =>
+      (context.findRenderObject() == null)
+          ? false
+          : (context.findRenderObject() as RenderBox).hasSize;
 
-  /// Returns an `Offset` of the provided `RenderBox descendent`,
-  /// along with any additional passed `offset`, within this parent [Roll].
+  /// Calculates the offset of a descendant widget relative to this [Roll].
+  ///
+  /// This will be used in the future for the shared gradient sheet functionality
+  /// to determine which portion of the gradient each descendant [Foil] should use.
   Offset getDescendantOffset({
     required RenderBox descendant,
     Offset offset = Offset.zero,
-  }) =>
-      descendant.localToGlobal(offset,
-          ancestor: context.findRenderObject() as RenderBox);
+  }) => descendant.localToGlobal(
+    offset,
+    ancestor: context.findRenderObject() as RenderBox,
+  );
 
   @override
   void initState() {
     super.initState();
-    // We will do it anyway for now
-    // so that a `Crinkle.isAnimated` may be toggled freely.
-    // if (widget.crinkle.isAnimated)
     _initController();
   }
 
+  /// Initializes the animation controller with [Crinkle] properties.
+  ///
+  /// Creates an unbounded [AnimationController] that repeats according to
+  /// the properties specified in [Roll.crinkle], such as min/max values,
+  /// animation period, and whether the animation should reverse direction.
   void _initController() {
-    _rollController = AnimationController.unbounded(vsync: this)
-      ..repeat(
-        // TODO: update these values if changed
-        min: widget.crinkle.min,
-        max: widget.crinkle.max,
-        period: widget.crinkle.period,
-        reverse: widget.crinkle.shouldReverse,
-      );
+    _rollController = AnimationController.unbounded(vsync: this)..repeat(
+      // TODO: update these values if changed
+      min: widget.crinkle.min,
+      max: widget.crinkle.max,
+      period: widget.crinkle.period,
+      reverse: widget.crinkle.shouldReverse,
+    );
   }
 
   @override

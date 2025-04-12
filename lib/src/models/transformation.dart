@@ -4,7 +4,7 @@
 /// for this package.
 library foil;
 
-import '../common.dart';
+import 'package:nonsense_foil/nonsense_foil.dart';
 
 /// The definition of a `Function` that positionally accepts a \
 /// `double x` then `double y` and returns a [GradientTransform], \

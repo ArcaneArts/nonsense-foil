@@ -1,21 +1,34 @@
-/// Provides `PointerTracker` to replace accelerometer sensor data
-/// with pointer/touch position tracking
 library foil;
 
 import 'package:flutter/gestures.dart';
-import 'package:nonsense_foil/foil.dart';
+import 'package:nonsense_foil/nonsense_foil.dart';
 
-import '../common.dart';
-
-/// A callback used to provide a parent with normalized
-/// pointer position data as `double`s between `-1..1`.
+/// Function signature for callbacks that report normalized pointer position.
 ///
-/// [PointerTracker.onPositionChange] is invoked on pointer movement.
+/// The [normalizedX] and [normalizedY] parameters represent the pointer position
+/// normalized to a range of -1.0 to 1.0, where (0,0) is the center of the tracking area.
 typedef PointerCallback = void Function(double normalizedX, double normalizedY);
 
-/// A widget that tracks pointer/touch position and normalizes the coordinates
-/// relative to the widget's size.
+/// A widget that tracks pointer movements and reports normalized positions.
+///
+/// This widget replaces the previous accelerometer-based implementation and
+/// provides similar functionality but using pointer (mouse/touch) input instead.
+/// It normalizes pointer positions to a range of -1.0 to 1.0 and applies
+/// scaling based on the provided [scalar].
+///
+/// When [useRelativePosition] is true, the widget tracks movement relative to the
+/// initial touch position rather than absolute position within the widget bounds.
+///
+/// Use this widget when you need to create effects that respond to pointer movement,
+/// such as the rainbow shimmer effect in [Foil].
 class PointerTracker extends StatefulWidget {
+  /// Creates a [PointerTracker] widget.
+  ///
+  /// The [disabled] parameter controls whether pointer tracking is active.
+  /// The [scalar] parameter adjusts the sensitivity of the tracking.
+  /// The [onPositionChange] callback is called whenever the pointer position changes.
+  /// The [useRelativePosition] parameter determines whether tracking should be
+  /// relative to the initial pointer position or absolute within the widget bounds.
   const PointerTracker({
     Key? key,
     required this.disabled,
@@ -25,73 +38,103 @@ class PointerTracker extends StatefulWidget {
     this.useRelativePosition = true,
   }) : super(key: key);
 
-  /// If `disabled` is `true`, then this `PointerTracker`
-  /// will stop tracking pointer movement.
+  /// Whether pointer tracking is disabled.
+  ///
+  /// When true, pointer movements will not trigger the [onPositionChange] callback.
   final bool disabled;
 
-  /// Scale factor for pointer movement values
+  /// Scaling factors to apply to normalized pointer position values.
+  ///
+  /// This allows adjusting sensitivity independently on each axis.
   final Scalar scalar;
 
-  /// The `child` of this tracker, returned from `build`.
+  /// The widget below this widget in the tree.
   final Widget child;
 
-  /// When true, position is relative to initial touch/hover position
-  /// When false, position is based on absolute position within the widget
+  /// Whether to track movement relative to initial touch position.
+  ///
+  /// When true, movements are reported relative to where the pointer first
+  /// contacted the widget, making (0,0) the initial touch point.
+  /// When false, positions are reported relative to the widget's bounds,
+  /// with (0,0) being the center of the widget.
   final bool useRelativePosition;
 
-  /// Callback that delivers normalized pointer position values
+  /// Callback that receives normalized pointer position.
+  ///
+  /// Called whenever the pointer position changes with values
+  /// normalized to -1.0 to 1.0 on both axes and scaled by [scalar].
   final PointerCallback onPositionChange;
 
   @override
   _PointerTrackerState createState() => _PointerTrackerState();
 }
 
+/// State for the [PointerTracker] widget.
 class _PointerTrackerState extends State<PointerTracker> {
-  /// Current normalized x,y position (-1.0 to 1.0)
+  /// Current normalized X coordinate in the range -1.0 to 1.0.
   double normalizedX = 0.0;
+
+  /// Current normalized Y coordinate in the range -1.0 to 1.0.
   double normalizedY = 0.0;
 
-  /// Capture the initial position for relative movement
+  /// Initial position where the pointer made contact.
+  ///
+  /// Used when [PointerTracker.useRelativePosition] is true to
+  /// calculate relative movement from the initial touch point.
   Offset? initialPosition;
 
-  /// Reference to the render box for size calculations
+  /// Key used to get the render box for position calculations.
   final GlobalKey _containerKey = GlobalKey();
 
-  /// Track if pointer is currently inside the widget
+  /// Whether a pointer is currently in contact with the widget.
   bool isPointerDown = false;
 
-  /// Normalize position values to the -1.0 to 1.0 range
+  /// Updates the normalized position based on pointer location.
+  ///
+  /// Calculates normalized coordinates (-1.0 to 1.0) based on the pointer
+  /// position relative to widget bounds or initial position, then calls
+  /// [PointerTracker.onPositionChange] with the scaled values.
   void _updatePosition(Offset position) {
     if (widget.disabled) return;
 
-    final RenderBox? renderBox = _containerKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? renderBox =
+        _containerKey.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox == null) return;
 
     final Size size = renderBox.size;
 
     Offset effectivePosition;
     if (widget.useRelativePosition && initialPosition != null) {
-      // Calculate relative movement from initial position
+      // Calculate position relative to initial touch point
       effectivePosition = position - initialPosition!;
-
-      // Scale relative movement to be more noticeable
-      // Normalize to -1.0 to 1.0 based on half the widget size
-      normalizedX = (effectivePosition.dx / (size.width / 2)).clamp(-1.0, 1.0) * widget.scalar.horizontal;
-      normalizedY = (effectivePosition.dy / (size.height / 2)).clamp(-1.0, 1.0) * widget.scalar.vertical;
+      normalizedX =
+          (effectivePosition.dx / (size.width / 2)).clamp(-1.0, 1.0) *
+          widget.scalar.horizontal;
+      normalizedY =
+          (effectivePosition.dy / (size.height / 2)).clamp(-1.0, 1.0) *
+          widget.scalar.vertical;
     } else {
-      // Use absolute position within the widget
-      // Convert from widget coordinates (0 to width/height) to -1.0 to 1.0
-      normalizedX = ((position.dx / size.width) * 2 - 1).clamp(-1.0, 1.0) * widget.scalar.horizontal;
-      normalizedY = ((position.dy / size.height) * 2 - 1).clamp(-1.0, 1.0) * widget.scalar.vertical;
+      // Calculate position relative to widget center
+      normalizedX =
+          ((position.dx / size.width) * 2 - 1).clamp(-1.0, 1.0) *
+          widget.scalar.horizontal;
+      normalizedY =
+          ((position.dy / size.height) * 2 - 1).clamp(-1.0, 1.0) *
+          widget.scalar.vertical;
     }
 
     widget.onPositionChange(normalizedX, normalizedY);
   }
 
+  /// Handles initial pointer contact.
+  ///
+  /// Stores the initial position for relative tracking and updates
+  /// the current position.
   void _handlePointerDown(PointerDownEvent event) {
     if (widget.disabled) return;
 
-    final RenderBox renderBox = _containerKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox renderBox =
+        _containerKey.currentContext!.findRenderObject() as RenderBox;
     final localPosition = renderBox.globalToLocal(event.position);
 
     setState(() {
@@ -102,135 +145,56 @@ class _PointerTrackerState extends State<PointerTracker> {
     _updatePosition(localPosition);
   }
 
+  /// Handles pointer movement when in contact with the widget.
+  ///
+  /// Updates position based on the current pointer location.
   void _handlePointerMove(PointerMoveEvent event) {
     if (widget.disabled || !isPointerDown) return;
 
-    final RenderBox renderBox = _containerKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox renderBox =
+        _containerKey.currentContext!.findRenderObject() as RenderBox;
     final localPosition = renderBox.globalToLocal(event.position);
 
     _updatePosition(localPosition);
   }
 
+  /// Handles pointer release.
+  ///
+  /// Marks the pointer as no longer in contact with the widget.
   void _handlePointerUp(PointerUpEvent event) {
     if (widget.disabled) return;
 
     setState(() {
       isPointerDown = false;
-
-      // Optional: Reset position when pointer is released
-      // normalizedX = 0.0;
-      // normalizedY = 0.0;
-      // widget.onPositionChange(normalizedX, normalizedY);
     });
   }
 
+  /// Handles pointer hover when not in contact with the widget.
+  ///
+  /// Updates position based on hover location for desktop and web platforms.
   void _handlePointerHover(PointerHoverEvent event) {
     if (widget.disabled || isPointerDown) return;
 
-    final renderBox = _containerKey.currentContext!.findRenderObject() as RenderBox;
+    final renderBox =
+        _containerKey.currentContext!.findRenderObject() as RenderBox;
     final localPosition = renderBox.globalToLocal(event.position);
 
     _updatePosition(localPosition);
   }
 
-  // @override
+  @override
   Widget build(BuildContext context) {
     return Listener(
       onPointerDown: _handlePointerDown,
       onPointerMove: _handlePointerMove,
       onPointerUp: _handlePointerUp,
       onPointerHover: _handlePointerHover,
-      child: Container(
+      child: SizedBox(
         key: _containerKey,
         width: double.infinity,
         height: double.infinity,
         child: widget.child,
       ),
     );
-  }
-}
-
-// File: lib/src/widgets/foil.dart (updated version)
-// Note: Only showing the changes in the _FoilState class
-
-class _FoilState extends State<Foil> {
-  /// Ranges from `-1.0..1.0` based on pointer position
-  double normalizedX = 0, normalizedY = 0;
-
-  /// Values come from [rollController] which drives an animation from any
-  /// potential ancestral [Roll.crinkle]'s `Crinkle.min` -> `Crinkle.max`
-  /// values. Further multiplied by `Crinkle.scalar`, a [Scalar] that allows
-  /// per-axis scaling (up, down, negation, inversion).
-  double rollX = 0, rollY = 0;
-
-  /// A potential value from an [AnimationController]
-  /// in a potential ancestral [Roll].
-  ValueListenable? rollController;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (rollController != null) {
-      rollController!.removeListener(onRollChange);
-    }
-    rollController = Roll.of(context)?.rollListenable;
-    if (rollController != null) {
-      rollController!.addListener(onRollChange);
-    }
-  }
-
-  @override
-  void dispose() {
-    rollController?.removeListener(onRollChange);
-    super.dispose();
-  }
-
-  void onRollChange() => (!widget.isUnwrapped) ? setState(() {}) : null;
-
-  @override
-  Widget build(BuildContext context) {
-    /// There may be a [Roll] above this `Foil`.
-    final roll = Roll.of(context);
-    final gradient = widget.gradient ?? roll?.gradient ?? Foils.linearLooping;
-
-    /// For smoother `lerp`s when unwrapping `Foil`.
-    final effectiveGradient = widget.isUnwrapped
-        ? widget.unwrappedGradient ?? gradient.asNill
-        : gradient.scale(widget.opacity); // scale() controls overall opacity
-
-    /// The `PointerTracker` and `AnimatedFoil` need to be built regardless of
-    /// whether a parent `Roll.crinkle.isAnimated` or not (or even exists).
-    Widget _foil() => PointerTracker(
-      disabled: widget.isUnwrapped,
-      scalar: widget.scalar,
-      onPositionChange: (x, y) => setState(() {
-        normalizedX = x;
-        normalizedY = y;
-      }),
-      child: AnimatedFoil(
-        gradient: effectiveGradient,
-        rolloutX: [rollX, normalizedX],
-        rolloutY: [rollY, normalizedY],
-        blendMode: widget.blendMode,
-        useSensor: widget.useSensor, // renamed but kept for compatibility
-        isAgressive: widget.isAgressive,
-        speed: widget.speed,
-        duration: widget.duration,
-        curve: widget.curve,
-        onEnd: widget.onEnd,
-        child: widget.box ?? widget.child, // _box created by `Foil.sheet`
-      ),
-    );
-
-    return (roll != null && roll.isAnimated)
-        ? ValueListenableBuilder(
-      valueListenable: rollController!,
-      builder: (_, value, child) {
-        rollX = roll.scalar.horizontal * (value as double);
-        rollY = roll.scalar.vertical * value;
-        return _foil();
-      },
-    )
-        : _foil();
   }
 }

@@ -22,18 +22,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_web_plugins:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
-  foil:
-    dependency: "direct dev"
-    description:
-      path: ".."
-      relative: true
-    source: path
-    version: "0.9.0+1"
   material_color_utilities:
     dependency: transitive
     description:
@@ -50,38 +38,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.16.0"
-  plugin_platform_interface:
-    dependency: transitive
+  nonsense_foil:
+    dependency: "direct dev"
     description:
-      name: plugin_platform_interface
-      sha256: c2c49e16d42fd6983eb55e44b7f197fdf16b4da7aab7f8e1d21da307cad3fb02
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
-  sensors_plus:
-    dependency: transitive
-    description:
-      name: sensors_plus
-      sha256: "268cf00b0e2ceed6ffd85624a771d5e78ca00e3bd2d86fccb262b33d52409830"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
-  sensors_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: sensors_plus_platform_interface
-      sha256: d700f316010513286a52fa50d80ae8b3adfacbc3e4efebb2d9d163d6cc4f6e9e
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
-  sensors_plus_web:
-    dependency: transitive
-    description:
-      name: sensors_plus_web
-      sha256: "7fb13450f34454d78f648ad398f77c0305f5ce982e772a086e15255fbf5a0b99"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
+      path: ".."
+      relative: true
+    source: path
+    version: "0.9.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -103,14 +66,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
-  xl:
-    dependency: "direct main"
-    description:
-      name: xl
-      sha256: a4bdf899b452c26ebfbb4409b051edcb2b4e32a988136928685118fbe965b3fe
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.9.1"
 sdks:
-  dart: ">=3.7.0-0 <4.0.0"
-  flutter: ">=1.20.0"
+  dart: ">=3.7.0 <4.0.0"
+  flutter: ">=1.17.0"

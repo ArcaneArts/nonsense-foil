@@ -1,24 +1,27 @@
-/// Provides `AnimatedFoil`, which utilizes `GradientTween`,
-/// as well as `RolledOutFoil`;
-/// both [ImplicitlyAnimatedWidget]s to handle particular `Foil` properties.
-//
-// These two classes could be simplified by sharing parameters
-// through some means (ParentData?), though they are both quite simple already.
 library foil;
 
-import 'common.dart';
+import 'package:nonsense_foil/nonsense_foil.dart';
 import 'widgets/roll.dart';
 
-/// {@macro animated_foil}
+/// An implicitly animated widget for Foil gradients.
+///
+/// This widget handles the animation of gradients for [Foil] widgets,
+/// providing smooth transitions between gradient states. It supports
+/// animations for both gradient colors and positions.
+///
+/// The [AnimatedFoil] widget works in conjunction with [RolledOutFoil]
+/// to create the complete foil effect with animated transformations.
 class AnimatedFoil extends ImplicitlyAnimatedWidget {
-  /// {@template animated_foil}
-  /// An `ImplicitlyAnimatedWidget` that renders a [gradient]-masked
-  /// [RolledOutFoil] that is "rolled out," or translated,
-  /// by percentages represented as [rolloutX] and [rolloutY].
+  /// Creates an animated foil effect.
   ///
-  /// Use `duration` and `curve` to control the `animation`
-  /// between old and new [gradient]s.
-  /// {@endtemplate}
+  /// The [gradient] parameter defines the gradient to be displayed.
+  /// The [rolloutX] and [rolloutY] parameters control the positioning
+  /// of the gradient based on pointer or roll animations.
+  /// The [blendMode] determines how the gradient is blended with the child.
+  /// The [useSensor] parameter controls whether pointer input affects the gradient.
+  /// The [isAgressive] parameter controls the gradient lerp method.
+  /// The [duration] parameter sets how long the gradient animation will take.
+  /// The [curve] parameter defines the animation curve.
   const AnimatedFoil({
     Key? key,
     required this.gradient,
@@ -34,40 +37,43 @@ class AnimatedFoil extends ImplicitlyAnimatedWidget {
     VoidCallback? onEnd,
   }) : super(key: key, duration: duration, curve: curve, onEnd: onEnd);
 
-  /// The `Gradient` to pass to this `AnimatedFoil`'s [RolledOutFoil].
+  /// The gradient to display.
+  ///
+  /// This gradient will be animated when it changes, transitioning
+  /// smoothly from the previous gradient to the new one.
   final Gradient? gradient;
 
-  /// A value between `-1..1` that describes how "rolled out"
-  /// this `AnimatedFoil`'s [RolledOutFoil] is.
+  /// The horizontal offset factors for the gradient.
   ///
-  /// That is to say, this value corresponds to a percentage of the
-  /// [child]'s size to offset/translate the [gradient].
-  ///
-  /// `rolloutFoo[0]` correlates to [Crinkle] provided animation values
-  /// and `rolloutFoo[1]` corresponds to sensor data.
-  final List<double> rolloutX, rolloutY;
+  /// Contains values that control the horizontal positioning of the gradient.
+  /// Usually has two values: one from Roll animation and one from pointer tracking.
+  final List<double> rolloutX;
 
-  /// {@template blend_mode}
-  /// The [BlendMode] utilized in painting the `Foil` [gradient].
-  /// {@endtemplate}
+  /// The vertical offset factors for the gradient.
+  ///
+  /// Contains values that control the vertical positioning of the gradient.
+  /// Usually has two values: one from Roll animation and one from pointer tracking.
+  final List<double> rolloutY;
+
+  /// The blend mode used to composite the gradient over the child.
   final BlendMode blendMode;
 
-  /// {@template use_sensor}
-  /// Default is `true`, but if passed `false` then [FoilShader] in the
-  /// [StaticFoil] will not consider accelerometer sensors data when
-  /// transforming its gradient.
-  /// Only animation by `Roll.crinkle` would translate the gradient then.
-  /// {@endtemplate}
+  /// Whether pointer input affects the gradient position.
   final bool useSensor;
 
-  /// Control the method used to lerp the gradients.
+  /// Controls how gradients are interpolated during animation.
+  ///
+  /// When true, uses a more direct interpolation method that
+  /// may produce more dramatic transitions between certain gradients.
   final bool isAgressive;
 
-  /// The `Widget` to wrap in [RolledOutFoil].
+  /// The widget to display with the animated gradient effect.
   final Widget child;
 
-  /// The `Duration` over which alterations to "rollout"s are animated. \
-  /// Passed as `RolledOutFoil.duration`.
+  /// How quickly the gradient responds to pointer movement.
+  ///
+  /// This duration controls the animation speed for translating the
+  /// gradient in response to pointer or sensor input.
   final Duration speed;
 
   @override
@@ -75,40 +81,56 @@ class AnimatedFoil extends ImplicitlyAnimatedWidget {
       _AnimatedFoilState();
 }
 
+/// State class for [AnimatedFoil] that handles gradient animations.
 class _AnimatedFoilState extends AnimatedWidgetBaseState<AnimatedFoil> {
+  /// The tween that animates between different gradients.
   GradientTween? _gradient;
 
   @override
-  void forEachTween(TweenVisitor<dynamic> visitor) => _gradient = visitor(
-      _gradient,
-      widget.gradient,
-      (dynamic value) => GradientTween(
-          begin: value as Gradient,
-          isAgressive: widget.isAgressive)) as GradientTween?;
+  void forEachTween(TweenVisitor<dynamic> visitor) =>
+      _gradient =
+          visitor(
+                _gradient,
+                widget.gradient,
+                (dynamic value) => GradientTween(
+                  begin: value as Gradient,
+                  isAgressive: widget.isAgressive,
+                ),
+              )
+              as GradientTween?;
 
   @override
   Widget build(BuildContext context) => RolledOutFoil(
-        gradient: _gradient!.evaluate(animation)!,
-        rolloutX: widget.rolloutX,
-        rolloutY: widget.rolloutY,
-        blendMode: widget.blendMode,
-        duration: widget.speed,
-        curve: widget.curve,
-        useSensor: widget.useSensor,
-        child: widget.child,
-      );
+    gradient: _gradient!.evaluate(animation)!,
+    rolloutX: widget.rolloutX,
+    rolloutY: widget.rolloutY,
+    blendMode: widget.blendMode,
+    duration: widget.speed,
+    curve: widget.curve,
+    useSensor: widget.useSensor,
+    child: widget.child,
+  );
 }
 
-/// {@macro rolled_out_foil}
+/// An implicitly animated widget that handles position animations for foil effects.
+///
+/// This widget takes a gradient and animates its position based on the
+/// rollout values, which can come from pointer tracking and/or Roll animations.
+/// It works as a second animation layer after [AnimatedFoil] handles the
+/// gradient color animations.
+///
+/// This class is responsible for the smooth movement of the gradient as the
+/// user interacts with the widget or as Roll animations progress.
 class RolledOutFoil extends ImplicitlyAnimatedWidget {
-  /// {@template rolled_out_foil}
-  /// An `ImplicitlyAnimatedWidget` that renders a [gradient]-masked
-  /// [StaticFoil] that is "rolled out," or translated,
-  /// by percentages represented as [rolloutX] and [rolloutY].
+  /// Creates a position-animated foil effect.
   ///
-  /// Use `duration` and `curve` to control the `animation`
-  /// between old and new rollouts.
-  /// {@endtemplate}
+  /// The [gradient] parameter is the current gradient to display.
+  /// The [rolloutX] and [rolloutY] parameters control the target positions
+  /// of the gradient based on pointer input and/or Roll animations.
+  /// The [blendMode] determines how the gradient is blended with the child.
+  /// The [useSensor] parameter controls whether pointer input affects the gradient.
+  /// The [duration] parameter sets how long position animations will take.
+  /// The [curve] parameter defines the animation curve.
   const RolledOutFoil({
     Key? key,
     required this.gradient,
@@ -121,26 +143,30 @@ class RolledOutFoil extends ImplicitlyAnimatedWidget {
     Curve curve = Curves.linear,
   }) : super(key: key, duration: duration, curve: curve);
 
-  /// The evaluated `Gradient` to forward to this `AnimatedFoil`'s [StaticFoil].
+  /// The gradient to display and animate.
   final Gradient gradient;
 
-  /// A value between `-1..1` that describes how "rolled out"
-  /// this `AnimatedFoil`'s [StaticFoil] is.
+  /// The horizontal offset factors for the gradient position.
   ///
-  /// That is to say, this value corresponds to a percentage of the
-  /// [child]'s size to offset or translate the [gradient].
-  ///
-  /// `rolloutFoo[0]` correlates to [Crinkle] provided animation values
-  /// and `rolloutFoo[1]` corresponds to sensor data.
-  final List<double> rolloutX, rolloutY;
+  /// Usually contains two values:
+  /// - The first from Roll animation
+  /// - The second from pointer tracking
+  final List<double> rolloutX;
 
-  /// {@template blend_mode}
+  /// The vertical offset factors for the gradient position.
+  ///
+  /// Usually contains two values:
+  /// - The first from Roll animation
+  /// - The second from pointer tracking
+  final List<double> rolloutY;
+
+  /// The blend mode used to composite the gradient over the child.
   final BlendMode blendMode;
 
-  /// {@template use_sensor}
+  /// Whether pointer input affects the gradient position.
   final bool useSensor;
 
-  /// The `Widget` to wrap in [StaticFoil].
+  /// The widget to display with the animated gradient effect.
   final Widget child;
 
   @override
@@ -148,37 +174,72 @@ class RolledOutFoil extends ImplicitlyAnimatedWidget {
       _RolledOutFoilState();
 }
 
+/// State class for [RolledOutFoil] that handles position animations.
+///
+/// This state class manages the tweens for animating gradient positions
+/// based on rollout values from pointer tracking and Roll animations.
 class _RolledOutFoilState extends AnimatedWidgetBaseState<RolledOutFoil> {
+  /// Tweens for each of the rollout values.
+  ///
+  /// These tweens handle the animation of gradient position factors:
+  /// - _rolloutX1 and _rolloutY1 are for Roll animation values
+  /// - _rolloutX2 and _rolloutY2 are for pointer tracking values
   Tween<double>? _rolloutX1, _rolloutY1, _rolloutX2, _rolloutY2;
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
-    _rolloutX1 = visitor(_rolloutX1, widget.rolloutX[0],
-            (dynamic value) => Tween<double>(begin: value as double))
-        as Tween<double>?;
-    _rolloutY1 = visitor(_rolloutY1, widget.rolloutY[0],
-            (dynamic value) => Tween<double>(begin: value as double))
-        as Tween<double>?;
-    _rolloutX2 = visitor(_rolloutX2, widget.rolloutX[1],
-            (dynamic value) => Tween<double>(begin: value as double))
-        as Tween<double>?;
-    _rolloutY2 = visitor(_rolloutY2, widget.rolloutY[1],
-            (dynamic value) => Tween<double>(begin: value as double))
-        as Tween<double>?;
+    // Set up tweens for horizontal Roll animation value
+    _rolloutX1 =
+        visitor(
+              _rolloutX1,
+              widget.rolloutX[0],
+              (dynamic value) => Tween<double>(begin: value as double),
+            )
+            as Tween<double>?;
+
+    // Set up tweens for vertical Roll animation value
+    _rolloutY1 =
+        visitor(
+              _rolloutY1,
+              widget.rolloutY[0],
+              (dynamic value) => Tween<double>(begin: value as double),
+            )
+            as Tween<double>?;
+
+    // Set up tweens for horizontal pointer tracking value
+    _rolloutX2 =
+        visitor(
+              _rolloutX2,
+              widget.rolloutX[1],
+              (dynamic value) => Tween<double>(begin: value as double),
+            )
+            as Tween<double>?;
+
+    // Set up tweens for vertical pointer tracking value
+    _rolloutY2 =
+        visitor(
+              _rolloutY2,
+              widget.rolloutY[1],
+              (dynamic value) => Tween<double>(begin: value as double),
+            )
+            as Tween<double>?;
   }
 
   @override
   Widget build(BuildContext context) {
+    // Get the ancestral Roll to access its gradient transform
     final roll = Roll.of(context);
+
+    // Build the static foil with animated position values
     return StaticFoil(
       gradient: widget.gradient,
       rolloutX: [
         _rolloutX1?.evaluate(animation) ?? 0.0,
-        _rolloutX2?.evaluate(animation) ?? 0.0
+        _rolloutX2?.evaluate(animation) ?? 0.0,
       ],
       rolloutY: [
         _rolloutY1?.evaluate(animation) ?? 0.0,
-        _rolloutY2?.evaluate(animation) ?? 0.0
+        _rolloutY2?.evaluate(animation) ?? 0.0,
       ],
       blendMode: widget.blendMode,
       useSensor: widget.useSensor,

@@ -2,9 +2,7 @@ library foil_demo;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:foil/foil.dart';
-import 'package:spectrum/spectrum.dart';
+import 'package:nonsense_foil/nonsense_foil.dart';
 
 import 'trading_card.dart';
 
@@ -17,15 +15,15 @@ class DemonstrationFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: 'Foil Demo',
-        color: Colors.white,
-        theme: ThemeData(primarySwatch: Colors.grey),
-        home: const Directionality(
-          textDirection: TextDirection.ltr,
-          // textDirection: TextDirection.rtl,
-          child: Demonstration(),
-        ),
-      );
+    title: 'Foil Demo',
+    color: Colors.white,
+    theme: ThemeData(primarySwatch: Colors.grey),
+    home: const Directionality(
+      textDirection: TextDirection.ltr,
+      // textDirection: TextDirection.rtl,
+      child: Demonstration(),
+    ),
+  );
 }
 
 /// A demonstration of wrapping widgets with `Foil`.
@@ -42,7 +40,7 @@ class _DemonstrationState extends State<Demonstration> {
   final cards = [
     'https://den-cards.pokellector.com/229/Gyarados-GX.CNV.112.19801.png',
     'https://den-cards.pokellector.com/209/Gyarados-GX.SM.212.29567.png',
-    'https://den-cards.pokellector.com/261/Gyarados.SM9.30.26527.png'
+    'https://den-cards.pokellector.com/261/Gyarados.SM9.30.26527.png',
   ];
   bool unwrapped = false;
 
@@ -52,8 +50,9 @@ class _DemonstrationState extends State<Demonstration> {
     cards.shuffle();
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
-          systemNavigationBarColor: Colors.white,
-          systemNavigationBarIconBrightness: Brightness.dark),
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
     );
   }
 
@@ -72,22 +71,22 @@ class _DemonstrationState extends State<Demonstration> {
 
     /// A square emoji icon that will be wrapped in `Foil`.
     Widget buildSquare(String label) => Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            const Text('■', style: squareStyle),
-            FittedBox(
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0.0,
-                ),
-              ),
+      alignment: Alignment.bottomCenter,
+      children: [
+        const Text('■', style: squareStyle),
+        FittedBox(
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.0,
             ),
-          ],
-        );
+          ),
+        ),
+      ],
+    );
 
     /// Returns a `Foil` that wraps a [buildSquare].
     Foil buildSample({
@@ -96,15 +95,16 @@ class _DemonstrationState extends State<Demonstration> {
       Scalar? scalar,
       Duration? speed,
       Duration? duration,
-    }) =>
-        Foil(
-          isUnwrapped: unwrapped,
-          gradient: gradient,
-          scalar: scalar ?? Scalar.identity,
-          speed: speed ?? const Duration(milliseconds: 150),
-          duration: duration ?? const Duration(milliseconds: 500),
-          child: buildSquare('\n$label'),
-        );
+    }) => Foil(
+      isUnwrapped: unwrapped,
+      gradient: gradient,
+      scalar: scalar ?? Scalar.identity,
+      speed: speed ?? const Duration(milliseconds: 150),
+      duration: duration ?? const Duration(milliseconds: 500),
+      useSensor: true,
+      // Enable pointer tracking
+      child: buildSquare('\n$label'),
+    );
 
     return GestureDetector(
       onTap: () => setState(() => unwrapped = !unwrapped),
@@ -181,7 +181,7 @@ class _DemonstrationState extends State<Demonstration> {
                   gradient: Foils.oilslick,
                   blendMode: BlendMode.srcATop, // default
                   // blendMode: BlendMode.srcIn, // no child, only Foil
-                  // Negates vertical sensor data:
+                  // Negates vertical pointer movement:
                   // scalar: const Scalar(vertical: 0),
                   child: const Text(
                     '☆',
@@ -193,26 +193,26 @@ class _DemonstrationState extends State<Demonstration> {
 
               /// [Foils] Palette
               /// ----------------
-
               Wrap(
                 alignment: WrapAlignment.center,
                 children: [
                   buildSample(
-                      label: 'linearRainbow', gradient: Foils.linearRainbow),
+                    label: 'linearRainbow',
+                    gradient: Foils.linearRainbow,
+                  ),
                   buildSample(
                     label: 'linearReversed',
                     gradient: Foils.linearReversed,
                   ),
                   buildSample(
-                      label: 'linearLooping', gradient: Foils.linearLooping),
+                    label: 'linearLooping',
+                    gradient: Foils.linearLooping,
+                  ),
                   buildSample(
                     label: 'linearLooping\nReversed',
                     gradient: Foils.linearLoopingReversed,
                   ),
-                  buildSample(
-                    label: 'sitAndSpin',
-                    gradient: Foils.sitAndSpin,
-                  ),
+                  buildSample(label: 'sitAndSpin', gradient: Foils.sitAndSpin),
                   buildSample(
                     label: 'gymClass\nParachute',
                     gradient: Foils.gymClassParachute,
@@ -236,9 +236,10 @@ class _DemonstrationState extends State<Demonstration> {
                     gradient: Foils.linearRainbow.copyWith(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomLeft,
-                      colors: List.from(Foils.linearRainbow.colors)
-                        ..insert(0, Colors.black)
-                        ..add(Colors.black),
+                      colors:
+                          List.from(Foils.linearRainbow.colors)
+                            ..insert(0, Colors.black)
+                            ..add(Colors.black),
                     ),
                   ),
                   buildSample(
@@ -296,7 +297,6 @@ class _DemonstrationState extends State<Demonstration> {
               /// https://github.com/Zabadam/foil/blob/main/example/lib/trading_card.dart
               /// Employs [package:xl](https://pub.dev/packages/xl)
               /// --------------------------------------------------
-
               Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -308,11 +308,10 @@ class _DemonstrationState extends State<Demonstration> {
                       isUnwrapped: unwrapped,
                       opacity: 0.3,
                       // Foil comes with GradientUtils from package:spectrum!
-                      gradient: Foils.sitAndSpin
+                      gradient: Foils.sitAndSpin,
                       // .copyWith(
                       //   center: const Alignment(-1, -2.5),
                       // )
-                      ,
                       child: TradingCard(
                         card: cards.first,
                         width: 400,
@@ -334,8 +333,12 @@ class _DemonstrationState extends State<Demonstration> {
                             opacity: 0.35,
                             child: TradingCard(
                               card: cards[1],
-                              padding:
-                                  const EdgeInsets.fromLTRB(100, 0, 80, 25),
+                              padding: const EdgeInsets.fromLTRB(
+                                100,
+                                0,
+                                80,
+                                25,
+                              ),
                             ),
                           ),
                           Foil(
@@ -345,8 +348,12 @@ class _DemonstrationState extends State<Demonstration> {
                             gradient: Foils.linearLoopingReversed,
                             child: TradingCard(
                               card: cards[2],
-                              padding:
-                                  const EdgeInsets.fromLTRB(80, 0, 100, 25),
+                              padding: const EdgeInsets.fromLTRB(
+                                80,
+                                0,
+                                100,
+                                25,
+                              ),
                             ),
                           ),
                         ],
@@ -360,25 +367,24 @@ class _DemonstrationState extends State<Demonstration> {
 
               /// Sheets of Foil
               /// ---------------
-
               const SizedBox(height: 10),
               Center(
                 child: Foil.sheet(
                   isUnwrapped: unwrapped,
-                  gradient:
-                      Foils.rainbow.copyWith(center: const Alignment(0, 0.6)),
+                  gradient: Foils.rainbow.copyWith(
+                    center: const Alignment(0, 0.6),
+                  ),
                   // blendMode: BlendMode.multiply,
                   scalar: const Scalar.xy(0.25, 0.4),
-                  sheet: const Sheet(
-                    height: 300,
-                    color: Colors.white,
-                  ),
+                  sheet: const Sheet(height: 300, color: Colors.white),
                   child: Align(
                     alignment: Alignment.topCenter,
                     child: Foil(
                       isUnwrapped: unwrapped,
                       gradient: Foils.rainbow.copyWith(
-                          radius: 1.5, center: const Alignment(0, 1.0)),
+                        radius: 1.5,
+                        center: const Alignment(0, 1.0),
+                      ),
                       child: const Text.rich(
                         TextSpan(
                           text: 'Foils.rainbow\n',

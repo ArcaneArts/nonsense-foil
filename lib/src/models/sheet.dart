@@ -2,7 +2,7 @@
 /// for [Container] used in styling  a `new Foil.sheet()`.
 library foil;
 
-import '../common.dart';
+import 'package:nonsense_foil/nonsense_foil.dart';
 
 /// {@macro sheet}
 class Sheet with Diagnosticable {
@@ -89,24 +89,68 @@ class Sheet with Diagnosticable {
       ..add(ColorProperty('color', color, defaultValue: null))
       ..add(DoubleProperty('width', width, defaultValue: false))
       ..add(DoubleProperty('height', height, defaultValue: false))
-      ..add(DiagnosticsProperty<EdgeInsetsGeometry>('margin', margin,
-          defaultValue: false))
-      ..add(DiagnosticsProperty<EdgeInsetsGeometry>('padding', padding,
-          defaultValue: false))
-      ..add(DiagnosticsProperty<AlignmentGeometry>('alignment', alignment,
-          defaultValue: false))
-      ..add(DiagnosticsProperty<Decoration>('decoration', decoration,
-          defaultValue: false))
-      ..add(DiagnosticsProperty<Decoration>(
-          'foregroundDecoration', foregroundDecoration, defaultValue: false))
-      ..add(DiagnosticsProperty<Clip>('clipBehavior', clipBehavior,
-          defaultValue: false))
-      ..add(DiagnosticsProperty<BoxConstraints>('constraints', constraints,
-          defaultValue: false))
-      ..add(DiagnosticsProperty<Matrix4>('transform', transform,
-          defaultValue: false))
-      ..add(DiagnosticsProperty<AlignmentGeometry>(
-          'transformAlignment', transformAlignment,
-          defaultValue: false));
+      ..add(
+        DiagnosticsProperty<EdgeInsetsGeometry>(
+          'margin',
+          margin,
+          defaultValue: false,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<EdgeInsetsGeometry>(
+          'padding',
+          padding,
+          defaultValue: false,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<AlignmentGeometry>(
+          'alignment',
+          alignment,
+          defaultValue: false,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<Decoration>(
+          'decoration',
+          decoration,
+          defaultValue: false,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<Decoration>(
+          'foregroundDecoration',
+          foregroundDecoration,
+          defaultValue: false,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<Clip>(
+          'clipBehavior',
+          clipBehavior,
+          defaultValue: false,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<BoxConstraints>(
+          'constraints',
+          constraints,
+          defaultValue: false,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<Matrix4>(
+          'transform',
+          transform,
+          defaultValue: false,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty<AlignmentGeometry>(
+          'transformAlignment',
+          transformAlignment,
+          defaultValue: false,
+        ),
+      );
   }
 }

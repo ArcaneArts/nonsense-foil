@@ -4,16 +4,16 @@ publish_to: 'none'
 version: 1.0.0
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ^3.7.0
+  flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  xl: any
   spectrum: 0.2.1+1
 
 dev_dependencies:
-  foil:
+  nonsense_foil:
     path: ../
 
 flutter:

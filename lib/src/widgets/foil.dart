@@ -2,10 +2,11 @@
 /// [Foil.colored] and self-contained [Foil.sheet].
 library foil;
 
+import 'package:nonsense_foil/foil.dart';
+
 import '../common.dart';
 
 import 'roll.dart';
-import 'sensors.dart';
 
 /// ![accelerometer-animated Foil](https://raw.githubusercontent.com/Zabadam/foil/master/doc/foil_tiny.gif)
 ///
@@ -105,7 +106,7 @@ class Foil extends StatefulWidget {
     this.curve = Curves.ease,
     this.onEnd,
   })  : sheet = const Sheet(), // irrelevant in this context
-        _box = null, // irrelevant in this context
+        box = null, // irrelevant in this context
         super(key: key);
 
   /// ![accelerometer-animated Foil](https://raw.githubusercontent.com/Zabadam/foil/master/doc/foil_tiny.gif)
@@ -166,7 +167,7 @@ class Foil extends StatefulWidget {
     this.curve = Curves.ease,
     this.onEnd,
   })  : sheet = const Sheet(), // irrelevant in this context
-        _box = null, // irrelevant in this context
+        box = null, // irrelevant in this context
         // TODO: update default
         gradient = LinearGradient(
           colors: colors + colors.reversed.toList(),
@@ -242,7 +243,7 @@ class Foil extends StatefulWidget {
     this.curve = Curves.ease,
     this.onEnd,
   })  : child = child ?? const SizedBox(),
-        _box = AnimatedContainer(
+        box = AnimatedContainer(
           width: sheet.width,
           height: sheet.height,
           margin: sheet.margin,
@@ -408,7 +409,7 @@ class Foil extends StatefulWidget {
   final Sheet sheet;
 
   /// Made non-null by [Foil.sheet] and then wraps [child].
-  final Widget? _box;
+  final Widget? box;
 
   @override
   _FoilState createState() => _FoilState();
@@ -436,13 +437,15 @@ class Foil extends StatefulWidget {
 
 class _FoilState extends State<Foil> {
   /// Ranges from `-1.0..1.0` basedon on accelerometer sensor data.
-  double normalizedX = 0, normalizedY = 0;
+  double normalizedX = 0,
+      normalizedY = 0;
 
   /// Values come from [rollController] which drives an animation from any
   /// potential ancestral [Roll.crinkle]'s `Crinkle.min` -> `Crinkle.max`
   /// values. Further multiplied by `Crinkle.scalar`, a [Scalar] that allows
   /// per-axis scaling (up, down, negation, inversion).
-  double rollX = 0, rollY = 0;
+  double rollX = 0,
+      rollY = 0;
 
   /// A potential value from an [AnimationController]
   /// in a potential ancestral [Roll].
@@ -454,7 +457,9 @@ class _FoilState extends State<Foil> {
     if (rollController != null) {
       rollController!.removeListener(onRollChange);
     }
-    rollController = Roll.of(context)?.rollListenable;
+    rollController = Roll
+        .of(context)
+        ?.rollListenable;
     if (rollController != null) {
       rollController!.addListener(onRollChange);
     }
@@ -470,63 +475,65 @@ class _FoilState extends State<Foil> {
 
   @override
   Widget build(BuildContext context) {
-    /// For inversion of axes for accelerometer data based on orientation.
-    /// TODO: Fix on web resize
+    /// For inversion of axes for pointer movement based on orientation.
+    /// This might still be useful for adjusting the effect direction
     final isPortrait =
-        (MediaQuery.maybeOf(context)?.orientation ?? Orientation.portrait) ==
+        (MediaQuery
+            .maybeOf(context)
+            ?.orientation ?? Orientation.portrait) ==
             Orientation.portrait;
 
     /// There may be a [Roll] above this `Foil`.
     final roll = Roll.of(context);
     final gradient = widget.gradient ?? roll?.gradient ?? Foils.linearLooping;
 
-    /// Plan is to *allow* the "cutting" of any descendent `Foil`s
-    /// from an ancestral `Roll` gradient, but we're getting cast errors
-    /// that "null is not of type RenderBox" when checking [roll.isSized].
-    // final rollSize = roll?.size; // check ifSized first
-    // ignore: lines_longer_than_80_chars
-    // final rollOffset = roll?.getDescendantOffset(descendant: context.findRenderObject() as RenderBox);
-
     /// For smoother `lerp`s when unwrapping `Foil`.
     final effectiveGradient = widget.isUnwrapped
         ? widget.unwrappedGradient ?? gradient.asNill
         : gradient.scale(widget.opacity); // scale() controls overall opacity
 
-    /// The `SensorListener` and `AnimatedFoil` need to be built regardless of
+    /// The `PointerTracker` and `AnimatedFoil` need to be built regardless of
     /// whether a parent `Roll.crinkle.isAnimated` or not (or even exists).
-    Widget _foil() => SensorListener(
-          // disabled: widget.isUnwrapped, // stop sensor updates when unwrapped
-          disabled: false,
-          step: const Duration(milliseconds: 1),
+    Widget _foil() =>
+        PointerTracker(
+          disabled: widget.isUnwrapped,
+          // stop pointer tracking when unwrapped
           scalar: widget.scalar,
-          onStep: (x, y) => setState(() {
-            normalizedX = x;
-            normalizedY = y;
-          }),
+          // Use onPositionChange instead of onStep
+          onPositionChange: (x, y) =>
+              setState(() {
+                normalizedX = x;
+                normalizedY = y;
+              }),
+          // You can add this parameter if you want to use relative positioning
+          useRelativePosition: true,
+          // or false for absolute positioning
           child: AnimatedFoil(
             gradient: effectiveGradient,
+            // Maintain the same orientation adjustments as before
             rolloutX: [rollX, (isPortrait ? normalizedX : -normalizedY)],
             rolloutY: [rollY, (isPortrait ? -normalizedY : -normalizedX)],
             blendMode: widget.blendMode,
             useSensor: widget.useSensor,
+            // kept for compatibility
             isAgressive: widget.isAgressive,
             speed: widget.speed,
             duration: widget.duration,
             curve: widget.curve,
             onEnd: widget.onEnd,
-            child: widget._box ?? widget.child, // _box created by `Foil.sheet`
+            child: widget.box ?? widget.child, // _box created by `Foil.sheet`
           ),
         );
 
     return (roll != null && roll.isAnimated)
         ? ValueListenableBuilder(
-            valueListenable: rollController!,
-            builder: (_, value, child) {
-              rollX = roll.scalar.horizontal * (value as double);
-              rollY = roll.scalar.vertical * value;
-              return _foil();
-            },
-          )
+      valueListenable: rollController!,
+      builder: (_, value, child) {
+        rollX = roll.scalar.horizontal * (value as double);
+        rollY = roll.scalar.vertical * value;
+        return _foil();
+      },
+    )
         : _foil();
   }
 }

@@ -1,24 +1,23 @@
-name: foil
+name: nonsense_foil
 description: >
   Wrap a widget with Foil, providing a rainbow shimmer
-  that twinkles as the accelerometer moves as well as
+  that twinkles as the cursor moves as well as
   tons of neat gradient features.
-version: 0.9.0+1
-repository: https://github.com/Zabadam/foil
-issue_tracker: https://github.com/Zabadam/foil/issues
-
+version: 1.0.0
+repository: https://github.com/ArcaneArts/nonsense-foil
+issue_tracker: https://github.com/ArcaneArts/nonsense-foil/issues
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ^3.7.0
   flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  # spectrum: ^0.2.1+1
-  sensors_plus: ^1.0.1
-
+  spectrum: ^0.2.1+1
 dev_dependencies:
-  spectrum:
-    path: ../spectrum/
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
 
 flutter: null

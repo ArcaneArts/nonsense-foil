@@ -11,7 +11,7 @@ Consider [holographic Pokémon trading cards](https://github.com/Zabadam/foil/bl
 or an [oil slick](https://google.com/search?q=oil+slick&tbm=isch 'Google image search for "oil slick"') on the road.
 
 | [![Foil header](https://raw.githubusercontent.com/Zabadam/foil/master/doc/foil.gif 'Get started! import \'package:foil/foil.dart\'')](https://pub.dev/packages/foil) | ![\`Foil\` \`Drawer\`](https://raw.githubusercontent.com/Zabadam/foil/master/doc/drawer.gif 'Foil Drawer') |
-| :------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------: |
+|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|
 
 ## 📚 Table of Contents
 - 🌈 [Foil](#foil)
@@ -94,7 +94,7 @@ Control how rapidly this `Foil` transforms its gradient with `Foil.speed`
 and define the animation `curve`. Defaults are `150ms` and `Curves.ease`.
 
 | [![animated unwrapping](https://raw.githubusercontent.com/Zabadam/foil/master/doc/isUnwrapped.gif 'Changing gradients or disabling the Foil both smoothly animate')](https://raw.githubusercontent.com/Zabadam/foil/master/doc/isUnwrapped.gif) | Furthermore, provide `Foil.duration` to dictate how long intrinsic animations of gradient will take. `Foil.duration` is also used if `isUnwrapped` is made `true` as the duration over which `Foil.gradient` will lerp to an appropriately-Typed transparent gradient for tweening. There is hard-coded recognition for linear, radial, and sweep gradients, as well as the additional [`Steps`](#steps) variants this package provides. Falls back to a transparent `LinearGradient` if `Type` cannot be matched. Override with `Foil.unwrappedGradient`. Click images to view full size. | [![unwrapping at various Durations](https://raw.githubusercontent.com/Zabadam/foil/master/doc/duration.gif)](https://raw.githubusercontent.com/Zabadam/foil/master/doc/duration.gif) |
-| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 > Upon completion of any tween to a new `gradient`, this `Foil` will call 
 > `onEnd`, an optional void callback.
 <div style='text-align:right'><h6>📚 <a href='#table-of-contents'>TABLE OF CONTENTS</a></h6></div>
@@ -123,7 +123,7 @@ already animating the `Foil` unless `Foil.useSensors: false`.
 
 
 | [![animated by \`Roll.crinkle\`](https://raw.githubusercontent.com/Zabadam/foil/master/doc/crinkle_small.gif 'animated by \`Roll.crinkle\`')](https://raw.githubusercontent.com/Zabadam/foil/master/doc/crinkle.gif) | The `Roll.crinkle` parameter defaults to `Crinkle.smooth` which is not animated (although each `Roll` has its own `AnimationController` for toggling purposes). A `Crinkle` dictates speed, intensity, and directionality of animation. Click image to view full size. |
-| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 > - `Crinkle.smooth` is a non-animated preset
 > - `Crinkle.crawling` is a very slow moving preset
 > - `Crinkle.twinkling` is a little bit faster
@@ -219,16 +219,16 @@ One such pre-rolled `Foils.oilslick` has opacity within each `Color`.
 `Gradient.colors` that have opacity.
 
 | [![four varieties of linear rainbow gradient](https://raw.githubusercontent.com/Zabadam/foil/master/doc/Foils.linear.gif)](https://raw.githubusercontent.com/Zabadam/foil/master/doc/Foils.linear.gif) | The default gradient for this package is `Foils.linearLooping`, a nice 'n' simple `LinearGradient`. Reverse the order of colors with `Foils.linearReversed`. To only cycle through the rainbow once see `Foils.linearRainbow`. Click image to view full size. |
-| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 
 Find other options like `Foils.gymClassParachute` and `Foils.sitAndSpin`,
 then tweak them to your liking with the 📋 `Gradient.copyWith()` methods. 
 
 | [![\`sitAndSpin\`, and \`gymClassParachute\`](https://raw.githubusercontent.com/Zabadam/foil/master/doc/Foils.gymClass.gif)](https://raw.githubusercontent.com/Zabadam/foil/master/doc/Foils.gymClass.gif) | [![\`oilslick\`](https://raw.githubusercontent.com/Zabadam/foil/master/doc/Foils.oilslick.gif)](https://raw.githubusercontent.com/Zabadam/foil/master/doc/Foils.oilslick.gif) |
-| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 
 | There is even a literal rainbow decal gradient made with the new `RadialSteps` type. Click image to view full size. | [![\`Foils.rainbow\`](https://raw.githubusercontent.com/Zabadam/foil/master/doc/Foils.rainbow.gif)](https://raw.githubusercontent.com/Zabadam/foil/master/doc/Foils.rainbow.gif) |
-| :------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|:--------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 
 <div style='text-align:right'><h6>📚 <a href='#table-of-contents'>TABLE OF CONTENTS</a></h6></div>
 
@@ -237,20 +237,20 @@ then tweak them to your liking with the 📋 `Gradient.copyWith()` methods.
 ## `Foil` Demo: 👷‍♂️ [source code](https://github.com/Zabadam/foil/tree/main/example/lib), 📲 [built APK](https://github.com/Zabadam/foil/blob/main/example/build/app/outputs/flutter-apk/app-release.apk)
 
 ## 🛣️ [Roadmap](#-table-of-contents 'Scroll up to 📚 Table of Contents')
-0. Make available a `Roll` of `Foil` feature such that a developer could
+1. Make available a `Roll` of `Foil` feature such that a developer could
 deploy a single gradient sheet in a region and mask that single gradient to any
 child `Foil` widgets.
    - `Roll`s are implemented now, but only offer to pass a `Gradient` to
    descendent `Foil`s--not to mask them from the same gradient.
-1. If this package's `Gradient` support expands further,
+2. If this package's `Gradient` support expands further,
 much of that functionality could be forked to an independent package.
-2. Custom `GradientTransform`s will be investigated, 
+3. Custom `GradientTransform`s will be investigated, 
 for example:  to deform `Foils.oilslick`.
 
 ## 🐞 [Bugs](#-table-of-contents 'Scroll up to 📚 Table of Contents')
-0. Potential optimizations for `GradientTween`ing within `lerp()`,
+1. Potential optimizations for `GradientTween`ing within `lerp()`,
 especially with the new `Steps` style gradients.
-1. Because this package's [`copyWith()`](#gradientutils-extensions) method
+2. Because this package's [`copyWith()`](#gradientutils-extensions) method
 for the superclass `Gradient` is used when applying `Crinkle` transformation,
 the returned gradient is limited by the hard-coded return types of the
 `copyWith` method; that is to say: the three Flutter `Gradient`s and the

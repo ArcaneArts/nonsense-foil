@@ -1,16 +1,18 @@
 # 🌈 nonsense_foil
 
-## [pub.dev Listing](https://pub.dev/packages/foil) | [API Doc](https://pub.dev/documentation/foil/latest) | [GitHub](https://github.com/Zabadam/foil)
+## This is forked from [FOIL](https://pub.dev/packages/foil) Much of the doch were just copied, then updated. This also removes the need for sensors for foil. if you prefer sensors use the original package.
+
+## [pub.dev Listing](https://pub.dev/packages/nonsense_foil) | [API Doc](https://pub.dev/documentation/nonsense_foil/latest) | [GitHub](https://github.com/Zabadam/foil)
 
 #### API References: [`Foil`](https://pub.dev/documentation/foil/latest/foil/Foil-class.html) | [
 
 `Foils`](https://pub.dev/documentation/foil/latest/foil/Foils-class.html) | [
 `Roll`](https://pub.dev/documentation/foil/latest/foil/Roll-class.html) | [
-`PointerTracker`](https://pub.dev/documentation/foil/latest/foil/PointerTracker-class.html) | [
-`Crinkle`](https://pub.dev/documentation/foil/latest/foil/Crinkle-class.html) | [
-`Foil.sheet`](https://pub.dev/documentation/foil/latest/foil/Foil/Foil.sheet.html) | [
-`Steps`](https://pub.dev/documentation/foil/latest/foil/LinearSteps-class.html) | [
-`GradientUtils`](https://pub.dev/documentation/foil/latest/foil/LinearGradientUtils.html)
+`PointerTracker`](https://pub.dev/documentation/nonsense_foil/latest/foil/PointerTracker-class.html) | [
+`Crinkle`](https://pub.dev/documentation/nonsense_foil/latest/foil/Crinkle-class.html) | [
+`Foil.sheet`](https://pub.dev/documentation/nonsense_foil/latest/foil/Foil/Foil.sheet.html) | [
+`Steps`](https://pub.dev/documentation/nonsense_foil/latest/foil/LinearSteps-class.html) | [
+`GradientUtils`](https://pub.dev/documentation/nonsense_foil/latest/foil/LinearGradientUtils.html)
 
 <br />
 
@@ -165,8 +167,10 @@ already animating the `Foil` unless `Foil.useSensors: false`.
 - `isAnimated`, `shouldReverse` flags
 
 > - Use `period` to determine the animation loop `Duration`
->   - The `scalar` property can be used to invert, scale, or negate axes
-      > (this is a `Scalar` object like a `Foil` uses to scale its sensors data)
+    >
+
+- The `scalar` property can be used to invert, scale, or negate axes
+  > (this is a `Scalar` object like a `Foil` uses to scale its sensors data)
 
 <div style='text-align:right'><h6>📚 <a href='#table-of-contents'>TABLE OF CONTENTS</a></h6></div>
 
@@ -278,7 +282,7 @@ then tweak them to your liking with the 📋 `Gradient.copyWith()` methods.
 
 # [Reference](#-table-of-contents 'Scroll up to 📚 Table of Contents')
 
-## 📖 [API Documentation](https://pub.dev/documentation/foil/latest)
+## 📖 [API Documentation](https://pub.dev/documentation/nonsense_foil/latest)
 
 ##
 

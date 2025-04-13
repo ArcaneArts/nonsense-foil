@@ -123,6 +123,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.16.0"
+  nonsense_spectrum:
+    dependency: "direct main"
+    description:
+      name: nonsense_spectrum
+      sha256: ddcd9983de4f89c112c17f5013fa23469ed6076b015e351ada87f790e6376ce7
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   path:
     dependency: transitive
     description:
@@ -144,14 +152,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.1"
-  spectrum:
-    dependency: "direct main"
-    description:
-      name: spectrum
-      sha256: f57f469beccb88098f4cc18d44a07c4fa9ed58cd5fc61cdd45fab5f1538dde7f
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.1+1"
   stack_trace:
     dependency: transitive
     description:

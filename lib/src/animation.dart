@@ -1,8 +1,9 @@
 library foil;
 
 import 'package:flutter/material.dart';
-import 'package:nonsense_foil/nonsense_foil.dart';
 import 'package:nonsense_spectrum/nonsense_spectrum.dart';
+
+import '../nonsense_foil.dart';
 
 /// An implicitly animated widget for Foil gradients.
 ///

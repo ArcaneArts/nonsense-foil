@@ -1,8 +1,9 @@
 library foil;
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:nonsense_foil/nonsense_foil.dart';
+import 'package:flutter/widgets.dart';
+
+import '../models/scalar.dart';
 
 /// Function signature for callbacks that report normalized pointer position.
 ///

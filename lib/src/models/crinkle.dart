@@ -1,6 +1,7 @@
 /// Provides the `Crinkle` animation parameter object for `Roll`s.
 library foil;
 
+import 'package:flutter/foundation.dart';
 import 'package:nonsense_foil/nonsense_foil.dart';
 
 /// Provide animation to a piece of `Foil` by wrapping it in a `Roll`
@@ -142,44 +143,42 @@ class Crinkle with Diagnosticable {
     Scalar? scalar,
     Duration? period,
     TransformGradient? transform,
-  }) => Crinkle(
-    isAnimated: isAnimated ?? this.isAnimated,
-    shouldReverse: shouldReverse ?? this.shouldReverse,
-    min: min ?? this.min,
-    max: max ?? this.max,
-    scalar: scalar ?? this.scalar,
-    period: period ?? this.period,
-    transform: transform ?? this.transform,
-  );
+  }) =>
+      Crinkle(
+        isAnimated: isAnimated ?? this.isAnimated,
+        shouldReverse: shouldReverse ?? this.shouldReverse,
+        min: min ?? this.min,
+        max: max ?? this.max,
+        scalar: scalar ?? this.scalar,
+        period: period ?? this.period,
+        transform: transform ?? this.transform,
+      );
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-      ..add(
-        DiagnosticsProperty<bool>(
-          'isAnimated',
-          isAnimated,
-          defaultValue: false,
-        ),
-      )
-      ..add(
-        DiagnosticsProperty<bool>(
-          'shouldReverse',
-          shouldReverse,
-          defaultValue: true,
-        ),
-      )
-      ..add(DoubleProperty('min', min, defaultValue: null))
-      ..add(DoubleProperty('max', max, defaultValue: null))
-      ..add(DiagnosticsProperty<Scalar>('scalar', scalar, defaultValue: null))
-      ..add(DiagnosticsProperty<Duration>('period', period, defaultValue: null))
-      ..add(
-        DiagnosticsProperty<TransformGradient>(
-          'transform',
-          transform,
-          defaultValue: null,
-        ),
-      );
+    properties..add(
+      DiagnosticsProperty<bool>(
+        'isAnimated',
+        isAnimated,
+        defaultValue: false,
+      ),
+    )..add(
+      DiagnosticsProperty<bool>(
+        'shouldReverse',
+        shouldReverse,
+        defaultValue: true,
+      ),
+    )..add(DoubleProperty('min', min, defaultValue: null))..add(
+        DoubleProperty('max', max, defaultValue: null))..add(
+        DiagnosticsProperty<Scalar>('scalar', scalar, defaultValue: null))..add(
+        DiagnosticsProperty<Duration>(
+            'period', period, defaultValue: null))..add(
+      DiagnosticsProperty<TransformGradient>(
+        'transform',
+        transform,
+        defaultValue: null,
+      ),
+    );
   }
 }

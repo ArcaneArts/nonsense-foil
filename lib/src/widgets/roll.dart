@@ -3,7 +3,9 @@
 /// to apply to each `Foil` underneath it.
 library foil;
 
+import 'package:flutter/foundation.dart';
 import 'package:nonsense_foil/nonsense_foil.dart';
+import 'package:flutter/material.dart';
 
 /// A widget that provides shared gradient and animation properties to descendant [Foil] widgets.
 ///

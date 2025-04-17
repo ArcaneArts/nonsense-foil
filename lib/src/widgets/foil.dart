@@ -1,6 +1,9 @@
 library foil;
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:nonsense_foil/nonsense_foil.dart';
+import 'package:nonsense_spectrum/nonsense_spectrum.dart';
 
 class Foil extends StatefulWidget {
   const Foil({

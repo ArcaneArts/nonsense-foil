@@ -1,6 +1,9 @@
 library foil;
 
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:nonsense_foil/nonsense_foil.dart';
+import 'package:nonsense_spectrum/nonsense_spectrum.dart';
 
 class StaticFoil extends SingleChildRenderObjectWidget {
   const StaticFoil({

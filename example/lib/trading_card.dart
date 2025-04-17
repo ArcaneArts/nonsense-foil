@@ -3,6 +3,7 @@
 /// Uses [Transform] to create a parallax-like effect when the pointer moves over the card.
 library foil_demo;
 
+import 'package:flutter/material.dart';
 import 'package:nonsense_foil/nonsense_foil.dart';
 
 /// Creates a `TradingCard` widget that reacts to pointer movement.

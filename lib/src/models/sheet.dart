@@ -2,7 +2,8 @@
 /// for [Container] used in styling  a `new Foil.sheet()`.
 library foil;
 
-import 'package:nonsense_foil/nonsense_foil.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 /// {@macro sheet}
 class Sheet with Diagnosticable {

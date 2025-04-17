@@ -3,7 +3,9 @@ library foil;
 
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
 import 'package:nonsense_foil/nonsense_foil.dart';
+import 'package:nonsense_spectrum/nonsense_spectrum.dart';
 
 // import 'steps.dart';
 

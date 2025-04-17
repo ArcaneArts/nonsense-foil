@@ -3,6 +3,7 @@ library foil_demo;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nonsense_foil/nonsense_foil.dart';
+import 'package:spectrum/gradients.dart';
 
 import 'trading_card.dart';
 

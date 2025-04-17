@@ -1,11 +1,5 @@
 library foil;
 
-export 'package:flutter/foundation.dart';
-export 'package:flutter/material.dart' show Colors;
-export 'package:flutter/rendering.dart';
-export 'package:flutter/widgets.dart';
-export 'package:nonsense_spectrum/nonsense_spectrum.dart';
-
 export 'src/animation.dart';
 export 'src/models/crinkle.dart';
 export 'src/models/foils.dart';
